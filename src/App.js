@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
-  VictoryLabel, VictoryLine,
+  VictoryLine, VictoryTooltip, VictoryChart,
 } from 'victory';
 import './App.css';
-import data from './jaildata';
-
-// useEffect(() => fetch('https://swapi.co/api/planets/4/')
-//   .then((res) => res.json())
-//   .then((res) => this.setState({ planets: res }))
-//   .catch(() => this.setState({ hasErrors: true })));
 
 function App() {
   const [jailData, setJailData] = useState();
@@ -17,7 +11,8 @@ function App() {
   useEffect(() => {
     fetch('https://mult-co-jail-data.herokuapp.com/api/v1/dailyCounts') //eslint-disable-line
       .then((res) => res.json())
-      .then((res) => setJailData(res.counts.slice(5)));
+      .then((res) => setJailData(res.counts.slice(-7)));
+
     setIsLoading(false);
   }, []);
 
@@ -25,19 +20,18 @@ function App() {
     return (
       <div className="App">
         <div className="Container">
-          <h1>blah blah</h1>
+          <h1>Multnomah County Detentions This Week</h1>
           <div className="Chart">
 
-
-            <VictoryLine
-            // labelComponent={<VictoryTooltip />}
-              data={jailData}
-              // labels={({ datum }) => datum.count}
-              labelComponent={<VictoryLabel renderInPortal dy={-10} />}
-              x="date"
-              y="count"
-            />
-
+            <VictoryChart>
+              <VictoryLine
+                labelComponent={<VictoryTooltip />}
+                data={jailData}
+                x="date"
+                y="count"
+                tickFormat={(x) => `${x.getDay()}`}
+              />
+            </VictoryChart>
           </div>
         </div>
       </div>
